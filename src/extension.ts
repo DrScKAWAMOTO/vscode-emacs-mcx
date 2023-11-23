@@ -178,6 +178,10 @@ export function activate(context: vscode.ExtensionContext): void {
     return emulator.runCommand("queryReplaceRegexp");
   });
 
+  registerEmulatorCommand("emacs-mcx.isearchInfo", (emulator) => {
+    return emulator.runCommand("isearchInfo");
+  });
+
   registerEmulatorCommand("emacs-mcx.isearchAbort", (emulator) => {
     return emulator.runCommand("isearchAbort");
   });

@@ -179,6 +179,7 @@ export class EmacsEmulator implements IEmacsController, vscode.Disposable {
     this.commandRegistry.register(new FindCommands.IsearchBackwardRegexp(this, searchState));
     this.commandRegistry.register(new FindCommands.QueryReplace(this, searchState));
     this.commandRegistry.register(new FindCommands.QueryReplaceRegexp(this, searchState));
+    this.commandRegistry.register(new FindCommands.IsearchInfo(this, searchState));
     this.commandRegistry.register(new FindCommands.IsearchAbort(this, searchState));
     this.commandRegistry.register(new FindCommands.IsearchExit(this, searchState));
 

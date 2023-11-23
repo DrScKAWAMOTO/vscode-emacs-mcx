@@ -990,6 +990,10 @@
     {
       "key": "ctrl+x right",
       "command": "workbench.action.nextEditor"
+    },
+    {
+      "key": "ctrl+cmd+x",
+      "command": "emacs-mcx.isearchInfo"
     }
   ]
 }
