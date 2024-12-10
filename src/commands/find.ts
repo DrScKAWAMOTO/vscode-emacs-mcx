@@ -10,6 +10,13 @@ export interface SearchState {
   startSelections: readonly vscode.Selection[] | undefined;
 }
 
+export let incrementalMode = false;
+
+function setIncrementalMode(mode: boolean) {
+  vscode.commands.executeCommand("setContext", "config.emacs-mcx.incrementalMode", mode);
+  incrementalMode = mode;
+}
+
 interface FindArgs {
   // See https://github.com/microsoft/vscode/blob/1.64.0/src/vs/editor/contrib/find/browser/findController.ts#L588-L599
   searchString?: string;
@@ -64,7 +71,7 @@ export class IsearchForward extends IsearchCommand {
   public readonly id = "isearchForward";
 
   public run(textEditor: TextEditor, isInMarkMode: boolean, prefixArgument: number | undefined): Thenable<void> {
-    vscode.commands.executeCommand("setContext", "emacs-mcx.nonIncrementalMode", false);
+    setIncrementalMode(true);
     this.searchState.startSelections = textEditor.selections;
     return this.openFindWidget({ isRegex: false }).then(() =>
       vscode.commands.executeCommand<void>("editor.action.nextMatchFindAction"),
@@ -76,7 +83,7 @@ export class IsearchBackward extends IsearchCommand {
   public readonly id = "isearchBackward";
 
   public run(textEditor: TextEditor, isInMarkMode: boolean, prefixArgument: number | undefined): Thenable<void> {
-    vscode.commands.executeCommand("setContext", "emacs-mcx.nonIncrementalMode", false);
+    setIncrementalMode(false);
     this.searchState.startSelections = textEditor.selections;
     return this.openFindWidget({ isRegex: false }).then(() =>
       vscode.commands.executeCommand<void>("editor.action.previousMatchFindAction"),
@@ -88,7 +95,7 @@ export class IsearchForwardRegexp extends IsearchCommand {
   public readonly id = "isearchForwardRegexp";
 
   public run(textEditor: TextEditor, isInMarkMode: boolean, prefixArgument: number | undefined): Thenable<void> {
-    vscode.commands.executeCommand("setContext", "emacs-mcx.nonIncrementalMode", false);
+    setIncrementalMode(true);
     this.searchState.startSelections = textEditor.selections;
     return this.openFindWidget({ isRegex: true }).then(() =>
       vscode.commands.executeCommand<void>("editor.action.nextMatchFindAction"),
@@ -100,7 +107,7 @@ export class IsearchBackwardRegexp extends IsearchCommand {
   public readonly id = "isearchBackwardRegexp";
 
   public run(textEditor: TextEditor, isInMarkMode: boolean, prefixArgument: number | undefined): Thenable<void> {
-    vscode.commands.executeCommand("setContext", "emacs-mcx.nonIncrementalMode", false);
+    setIncrementalMode(true);
     this.searchState.startSelections = textEditor.selections;
     return this.openFindWidget({ isRegex: true }).then(() =>
       vscode.commands.executeCommand<void>("editor.action.previousMatchFindAction"),
@@ -112,7 +119,7 @@ export class QueryReplace extends IsearchCommand {
   public readonly id = "queryReplace";
 
   public run(textEditor: TextEditor, isInMarkMode: boolean, prefixArgument: number | undefined): Thenable<void> {
-    vscode.commands.executeCommand("setContext", "emacs-mcx.nonIncrementalMode", false);
+    setIncrementalMode(true);
     this.searchState.startSelections = textEditor.selections;
     // I could not find a way to open the find widget with `editor.actions.findWithArgs`
     // revealing the replace input and restoring the both query and replace strings.
@@ -125,30 +132,11 @@ export class QueryReplaceRegexp extends IsearchCommand {
   public readonly id = "queryReplaceRegexp";
 
   public run(textEditor: TextEditor, isInMarkMode: boolean, prefixArgument: number | undefined): Thenable<void> {
-    vscode.commands.executeCommand("setContext", "emacs-mcx.nonIncrementalMode", false);
+    setIncrementalMode(true);
     this.searchState.startSelections = textEditor.selections;
     // Like `queryReplace` command, I could not find a way to open the find widget with the desired state.
     // In this command, setting `isRegex` is the priority and I gave up restoring the replace string by setting ´replaceString=undefined`.
     return this.openFindWidget({ isRegex: true, replaceString: "" });
-  }
-}
-
-/**
- * C-g
- */
-export class IsearchInfo extends IsearchCommand {
-  public readonly id = "isearchInfo";
-
-  public run(textEditor: TextEditor, isInMarkMode: boolean, prefixArgument: number | undefined): Thenable<void> {
-    MessageManager.showMessage("Info");
-    vscode.window.showInformationMessage("Hello World from HelloWorld!");
-    vscode.window.showInformationMessage("findInputFocussed = " + findInputFocussed);
-    vscode.window.showInformationMessage("findWidgetVisible = " + findWidgetVisible);
-    vscode.window.showInformationMessage("notebookFindWidgetFocused = " + notebookFindWidgetFocused);
-    vscode.window.showInformationMessage("terminalFindVisible = " + terminalFindVisible);
-    vscode.window.showInformationMessage("terminalFindFocused = " + terminalFindFocused);
-    vscode.window.showInformationMessage("webviewFindWidgetVisible = " + webviewFindWidgetVisible);
-    vscode.window.showInformationMessage("findWidgetForcused = " + findWidgetFocused);
   }
 }
 

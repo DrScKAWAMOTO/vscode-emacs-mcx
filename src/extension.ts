@@ -137,6 +137,17 @@ export function activate(context: vscode.ExtensionContext): void {
     return emulator.digitArgument(arg);
   });
 
+  registerEmulatorCommand("emacs-mcx.showMessage", (emulator, arg0) => {
+    if (!Array.isArray(arg0)) {
+      return;
+    }
+    const arg = arg0[0];
+    if (typeof arg !== "string") {
+      return;
+    }
+    return emulator.showMessage(arg);
+  });
+
   registerEmulatorCommand("emacs-mcx.typeChar", (emulator, arg0) => {
     if (!Array.isArray(arg0)) {
       return;
@@ -176,10 +187,6 @@ export function activate(context: vscode.ExtensionContext): void {
 
   registerEmulatorCommand("emacs-mcx.queryReplaceRegexp", (emulator) => {
     return emulator.runCommand("queryReplaceRegexp");
-  });
-
-  registerEmulatorCommand("emacs-mcx.isearchInfo", (emulator) => {
-    return emulator.runCommand("isearchInfo");
   });
 
   registerEmulatorCommand("emacs-mcx.isearchAbort", (emulator) => {
